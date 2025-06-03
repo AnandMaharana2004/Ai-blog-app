@@ -1,9 +1,24 @@
 "use client";
 
 import { useState } from "react";
-// import { Navbar } from "@/components/layout/Navbar";
+// import { Navbar } from "@/components/layout/Navbar"; // Assuming Navbar is in this path
+
+// shadcn/ui components
+import { Button } from "@/components/ui/button";
 import {
-    UserCircle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+
+// Icons from lucide-react
+import {
     ImagePlus,
     VideoIcon,
     Briefcase,
@@ -11,143 +26,262 @@ import {
     Newspaper,
     UserPlus,
     Hash,
+    MoreHorizontal,
+    MessageCircle,
+    Repeat,
+    Send,
+    ThumbsUp,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import Footer from "@/components/footer";
+
+// Dummy data for posts (you'd fetch this from an API)
+const initialPosts = [
+    {
+        id: 1,
+        author: "Elena Rodriguez",
+        authorTitle: "AI Researcher @ Innovatech",
+        authorAvatar: "/avatars/elena.png", // Replace with actual paths or URLs
+        timestamp: "1h ago",
+        content:
+            "Thrilled to share our latest breakthrough in natural language understanding! Our new model achieves state-of-the-art results on several benchmarks. #AI #NLP #MachineLearning",
+        imageUrl: "/images/post-image-1.jpg", // Optional image for the post
+        likes: 125,
+        comments: 18,
+    },
+    {
+        id: 2,
+        author: "Marcus Chen",
+        authorTitle: "UX Lead @ DesignCo",
+        authorAvatar: "/avatars/marcus.png",
+        timestamp: "3h ago",
+        content:
+            "Just published a new article on 'The Future of Accessible Design'. Would love to hear your thoughts and feedback! Link in comments. #UXDesign #Accessibility #WebDevelopment",
+        likes: 98,
+        comments: 27,
+    },
+    {
+        id: 3,
+        author: "BlogAI Official",
+        authorTitle: "Content Generation Platform",
+        authorAvatar: "/logo-square.png", // Use your app's logo
+        timestamp: "1d ago",
+        content:
+            "Did you know you can generate entire blog drafts with BlogAI in minutes? Try our new 'Advanced Outline' feature today and supercharge your content creation! #AIWriting #ContentMarketing #SaaS",
+        likes: 210,
+        comments: 45,
+    },
+];
+
+// Placeholder for current user (replace with actual user data)
+const currentUser = {
+    name: "Your Name",
+    title: "Your Professional Title",
+    avatarUrl: "/avatars/current-user.png", // Placeholder
+    avatarFallback: "YN",
+};
+
 
 const FeedPage = () => {
-    const [posts, setPosts] = useState([
-        { id: 1, author: "John Doe", content: "Exciting news in the industry!", timestamp: "1 hour ago" },
-        { id: 2, author: "Jane Smith", content: "Sharing my latest project update.", timestamp: "2 hours ago" },
-        // Add more dummy posts here
-    ]);
+    const [posts, setPosts] = useState(initialPosts);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <Navbar />
+        // Use shadcn/ui's 'bg-muted' for a subtle background that complements Cards
+        <>
+            <div className="min-h-screen bg-muted/40">
+                <Navbar />
 
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-4">
-                {/* Left Sidebar (Hidden on small screens) */}
-                <aside className="hidden md:block md:col-span-3 space-y-4">
-                    <div className="bg-white shadow rounded-lg p-4">
-                        <div className="flex items-center space-x-3 mb-3">
-                            <UserCircle className="h-10 w-10 text-gray-500" />
-                            <div>
-                                <div className="font-semibold">Your Name</div>
-                                <div className="text-sm text-gray-500">Brief Bio/Headline</div>
-                            </div>
-                        </div>
-                        <div className="text-sm text-gray-600">
-                            {/* Add more profile details or links here */}
-                            <div className="py-2 border-b border-gray-200">Connections: <span className="font-semibold">500+</span></div>
-                            <div className="py-2 border-b border-gray-200">Network</div>
-                            <div className="py-2">Groups</div>
-                            {/* ... */}
-                        </div>
-                    </div>
-
-                    <div className="bg-white shadow rounded-lg p-4 text-sm text-gray-600">
-                        {/* Add links to networks, groups, etc. */}
-                        <div className="mb-2 font-semibold">Shortcuts</div>
-                        <div className="py-1 hover:bg-gray-100 rounded"><Hash className="inline-block w-4 h-4 mr-2 text-gray-400" /> #trending</div>
-                        <div className="py-1 hover:bg-gray-100 rounded"><Briefcase className="inline-block w-4 h-4 mr-2 text-gray-400" /> Jobs</div>
-                        {/* ... */}
-                    </div>
-                </aside>
-
-                {/* Main Feed Area */}
-                <main className="col-span-1 md:col-span-6 space-y-4">
-                    {/* Start a Post */}
-                    <div className="bg-white shadow rounded-lg p-4">
-                        <div className="flex space-x-3 mb-3">
-                            <UserCircle className="h-10 w-10 text-gray-500" />
-                            <input
-                                type="text"
-                                placeholder="Start a post"
-                                className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            />
-                        </div>
-                        <div className="flex justify-around items-center border-t border-gray-200 pt-2">
-                            <button className="flex items-center text-blue-500 hover:text-blue-700 focus:outline-none text-sm">
-                                <ImagePlus className="w-5 h-5 mr-1" /> Photo
-                            </button>
-                            <button className="flex items-center text-green-500 hover:text-green-700 focus:outline-none text-sm">
-                                <VideoIcon className="w-5 h-5 mr-1" /> Video
-                            </button>
-                            <button className="flex items-center text-indigo-500 hover:text-indigo-700 focus:outline-none text-sm">
-                                <Briefcase className="w-5 h-5 mr-1" /> Job
-                            </button>
-                            <button className="flex items-center text-red-500 hover:text-red-700 focus:outline-none text-sm">
-                                <CalendarClock className="w-5 h-5 mr-1" /> Event
-                            </button>
-                            {/* More options can be added */}
-                        </div>
-                    </div>
-
-                    {/* Feed Posts */}
-                    {posts.map((post) => (
-                        <div key={post.id} className="bg-white shadow rounded-lg p-4">
-                            <div className="flex items-center space-x-3 mb-2">
-                                <UserCircle className="h-8 w-8 text-gray-500" />
-                                <div className="text-sm font-semibold">{post.author}</div>
-                                <div className="text-xs text-gray-500">{post.timestamp}</div>
-                            </div>
-                            <div className="text-gray-800 text-sm">{post.content}</div>
-                            <div className="mt-3 border-t border-gray-200 pt-2 flex justify-between text-gray-600 text-sm">
-                                <button className="hover:text-blue-500 focus:outline-none">Like</button>
-                                <button className="hover:text-blue-500 focus:outline-none">Comment</button>
-                                <button className="hover:text-blue-500 focus:outline-none">Share</button>
-                                <button className="hover:text-blue-500 focus:outline-none">Send</button>
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Load More Button / Infinite Scroll can be implemented here */}
-                    <div className="text-center py-4 text-gray-500">
-                        <button className="px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Load More
-                        </button>
-                    </div>
-                </main>
-
-                {/* Right Sidebar (Hidden on small and medium screens) */}
-                <aside className="hidden lg:block lg:col-span-3 space-y-4">
-                    <div className="bg-white shadow rounded-lg p-4">
-                        <div className="font-semibold mb-2">LinkedIn News</div>
-                        <ul className="text-sm text-gray-600 space-y-2">
-                            <li className="hover:bg-gray-100 rounded p-2">
-                                <a href="#" className="flex items-center">
-                                    <Newspaper className="w-4 h-4 mr-2 text-gray-400" /> Big Tech Earnings
-                                </a>
-                            </li>
-                            <li className="hover:bg-gray-100 rounded p-2">
-                                <a href="#" className="flex items-center">
-                                    <Newspaper className="w-4 h-4 mr-2 text-gray-400" /> Remote Work Trends
-                                </a>
-                            </li>
-                            {/* Add more news items */}
-                        </ul>
-                    </div>
-
-                    <div className="bg-white shadow rounded-lg p-4">
-                        <div className="font-semibold mb-2">Who to follow</div>
-                        <div className="space-y-3 text-sm text-gray-600">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <UserCircle className="h-7 w-7 text-gray-500" />
-                                    <div>Company A</div>
+                <div className="max-w-screen-xl mx-auto py-6 px-2 sm:px-4 lg:px-6 grid grid-cols-12 gap-x-4 lg:gap-x-6">
+                    {/* Left Sidebar (Hidden on small screens) */}
+                    <aside className="hidden md:block md:col-span-3 space-y-4">
+                        {/* Profile Card */}
+                        <Card>
+                            <CardHeader className="items-center text-center p-4">
+                                <Avatar className="w-20 h-20 mb-2 border-2 border-primary/20">
+                                    <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+                                    <AvatarFallback>{currentUser.avatarFallback}</AvatarFallback>
+                                </Avatar>
+                                <CardTitle className="text-lg">{currentUser.name}</CardTitle>
+                                <CardDescription className="text-xs">{currentUser.title}</CardDescription>
+                            </CardHeader>
+                            <Separator />
+                            <CardContent className="p-4 text-sm space-y-2">
+                                <div className="flex justify-between items-center hover:bg-muted p-2 rounded-md cursor-pointer">
+                                    <span>Connections</span>
+                                    <span className="font-semibold text-blue-600">500+</span>
                                 </div>
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded-full focus:outline-none">
-                                    <UserPlus className="w-4 h-4 inline-block" /> Follow
-                                </button>
-                            </div>
-                            {/* Add more suggestions */}
-                        </div>
-                    </div>
+                                <div className="hover:bg-muted p-2 rounded-md cursor-pointer">Grow your network</div>
+                            </CardContent>
+                            <Separator />
+                            <CardFooter className="p-4">
+                                <Button variant="outline" className="w-full text-sm">View Profile</Button>
+                            </CardFooter>
+                        </Card>
 
-                    {/* Add more right sidebar content (ads, etc.) */}
-                </aside>
+                        {/* Shortcuts/Recent Card */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Recent</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-1 text-sm">
+                                <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
+                                    <Hash className="w-4 h-4 mr-2 text-blue-500" /> #artificialintelligence
+                                </Button>
+                                <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
+                                    <Briefcase className="w-4 h-4 mr-2 text-green-500" /> Startup Jobs
+                                </Button>
+                                <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
+                                    <UserPlus className="w-4 h-4 mr-2 text-purple-500" /> Tech Community Group
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </aside>
+
+                    {/* Main Feed Area */}
+                    <main className="col-span-12 md:col-span-9 lg:col-span-6 space-y-4">
+                        {/* Start a Post Card */}
+                        <Card>
+                            <CardContent className="p-3 sm:p-4">
+                                <div className="flex items-center space-x-3 mb-3">
+                                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
+                                        <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+                                        <AvatarFallback>{currentUser.avatarFallback}</AvatarFallback>
+                                    </Avatar>
+                                    <Button variant="outline" className="flex-grow justify-start rounded-full text-muted-foreground hover:text-foreground text-sm sm:text-base">
+                                        Start a post, try writing with AI...
+                                    </Button>
+                                </div>
+                                <Separator className="my-2 sm:my-3" />
+                                <div className="flex justify-around items-center gap-1">
+                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:bg-muted hover:text-blue-600 flex-1">
+                                        <ImagePlus className="w-5 h-5 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Photo</span>
+                                    </Button>
+                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:bg-muted hover:text-green-600 flex-1">
+                                        <VideoIcon className="w-5 h-5 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Video</span>
+                                    </Button>
+                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:bg-muted hover:text-purple-600 flex-1">
+                                        <CalendarClock className="w-5 h-5 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Event</span>
+                                    </Button>
+                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:bg-muted hover:text-amber-600 flex-1">
+                                        <Newspaper className="w-5 h-5 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Article</span>
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Feed Posts */}
+                        {posts.map((post) => (
+                            <Card key={post.id}>
+                                <CardHeader className="pb-2">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center space-x-3">
+                                            <Avatar className="w-10 h-10">
+                                                <AvatarImage src={post.authorAvatar} alt={post.author} />
+                                                <AvatarFallback>{post.author.substring(0, 1)}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <CardTitle className="text-sm font-semibold hover:underline cursor-pointer">{post.author}</CardTitle>
+                                                <CardDescription className="text-xs">{post.authorTitle}</CardDescription>
+                                                <CardDescription className="text-xs">{post.timestamp}</CardDescription>
+                                            </div>
+                                        </div>
+                                        <Button variant="ghost" size="icon" className="w-8 h-8">
+                                            <MoreHorizontal className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="pb-3">
+                                    <p className="text-sm text-foreground/90 whitespace-pre-line">
+                                        {post.content}
+                                    </p>
+                                    {post.imageUrl && (
+                                        <div className="mt-3 rounded-lg overflow-hidden border">
+                                            <img src={post.imageUrl} alt="Post image" className="w-full h-auto object-cover" />
+                                        </div>
+                                    )}
+                                </CardContent>
+                                <CardFooter className="pt-2 pb-3 border-t flex-col items-start">
+                                    <div className="flex items-center space-x-2 text-xs text-muted-foreground mb-2">
+                                        {post.likes > 0 && <span>{post.likes} Likes</span>}
+                                        {post.likes > 0 && post.comments > 0 && <span>·</span>}
+                                        {post.comments > 0 && <span>{post.comments} Comments</span>}
+                                    </div>
+                                    <Separator className="mb-2" />
+                                    <div className="flex justify-around w-full">
+                                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-600 flex-1">
+                                            <ThumbsUp className="w-4 h-4 mr-1 sm:mr-2" /> Like
+                                        </Button>
+                                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-600 flex-1">
+                                            <MessageCircle className="w-4 h-4 mr-1 sm:mr-2" /> Comment
+                                        </Button>
+                                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-600 flex-1">
+                                            <Repeat className="w-4 h-4 mr-1 sm:mr-2" /> Repost
+                                        </Button>
+                                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-600 flex-1">
+                                            <Send className="w-4 h-4 mr-1 sm:mr-2" /> Send
+                                        </Button>
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                        {/* Load More Button */}
+                        <div className="text-center py-4">
+                            <Button variant="outline">Load More Posts</Button>
+                        </div>
+                    </main>
+
+                    {/* Right Sidebar (Hidden on small and medium screens) */}
+                    <aside className="hidden lg:block lg:col-span-3 space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Add to your feed</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {[
+                                    { name: "TechCrunch", desc: "Technology News", avatar: "/avatars/techcrunch.png", fallback: "TC" },
+                                    { name: "OpenAI", desc: "AI Research Company", avatar: "/avatars/openai.png", fallback: "OI" },
+                                    { name: "React Developers", desc: "Community", avatar: "/avatars/react.png", fallback: "RD" },
+                                ].map(item => (
+                                    <div key={item.name} className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-2">
+                                            <Avatar className="h-10 w-10">
+                                                <AvatarImage src={item.avatar} />
+                                                <AvatarFallback>{item.fallback}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="font-semibold text-sm hover:underline cursor-pointer">{item.name}</div>
+                                                <div className="text-xs text-muted-foreground">{item.desc}</div>
+                                            </div>
+                                        </div>
+                                        <Button variant="outline" size="sm">
+                                            <UserPlus className="w-4 h-4 mr-1" /> Follow
+                                        </Button>
+                                    </div>
+                                ))}
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Trending Today</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-1">
+                                {["AI Ethics Debate Heats Up", "The Future of Remote Work", "Quantum Computing Milestones"].map(trend => (
+                                    <Button key={trend} variant="ghost" className="w-full justify-start text-sm h-auto py-2 text-muted-foreground hover:text-foreground">
+                                        <div>
+                                            <p className="font-medium text-foreground">{trend}</p>
+                                            <p className="text-xs">Trending in Your Network</p>
+                                        </div>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                        {/* You could add an Ad Card here too */}
+                    </aside>
+                </div>
             </div>
-        </div>
+            <Footer />
+        </>
     );
 };
 

@@ -12,6 +12,7 @@ import {
   Compass,
   Home, // Optional: for a Home link if the logo itself isn't the only home link
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,6 +53,7 @@ export function Navbar() {
               </Link>
             ))}
             <button
+              onClick={() => redirect('/profile/fdsfsfsf')}
               className="p-1 rounded-full text-gray-600 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               aria-label="User Profile"
             >
