@@ -40,6 +40,14 @@ interface SignUpFormData {
     password: string;
 }
 
+function toFormData(data: SignUpFormData): FormData {
+    const fd = new FormData();
+    fd.append("username", data.username);
+    fd.append("email", data.email);
+    fd.append("password", data.password);
+    return fd;
+}
+
 function Page() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -88,18 +96,19 @@ function Page() {
 
     const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
+
         if (!validateForm()) return;
-        
+
         setIsLoading(true);
-        
+
         try {
+            // build FormData object
+            const realFormData = toFormData(formData);
+
             const response = await fetch("/api/auth/sign-up", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
+                body: realFormData,
+                // DO NOT set Content-Type header, browser will set it automatically
             });
 
             const data = await response.json();
@@ -111,7 +120,7 @@ function Page() {
 
             toast.success("Account created successfully! 🎉");
             router.push("/sign-in");
-            
+
         } catch (error) {
             console.error("Error during sign up:", error);
             toast.error("An error occurred while signing up. Please try again.");
@@ -231,8 +240,8 @@ function Page() {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button 
-                            type="submit" 
+                        <Button
+                            type="submit"
                             className="w-full"
                             disabled={isLoading}
                         >
