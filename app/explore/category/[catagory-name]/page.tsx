@@ -1,9 +1,9 @@
 import React from 'react'
 
-export function page() {
+function page() {
   return (
-    <div>
-        catagory on the bassis of name
-    </div>
+    <div>catagory page on the basis of name</div>
   )
 }
+
+export default page
