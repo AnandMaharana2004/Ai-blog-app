@@ -4,6 +4,7 @@ import React, { useState, useMemo, ChangeEvent, FormEvent } from 'react';
 
 // Using lucide-react for icons as in the previous version and your template
 import { User, Mail, Lock, Camera, Save, X, AlertCircle, CheckCircle, Pencil, Users, UserPlus, FileText, CalendarDays, Eye, ThumbsUp } from 'lucide-react';
+import Footer from '@/components/footer';
 
 // --- Mock Data (as provided in your template) ---
 // In a real app, this would come from an API
@@ -157,130 +158,133 @@ const UserProfilePage = ({ currentUserId = 'user123' }) => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
-      {/* --- Profile Banner --- */}
-      <div className="relative w-full h-48 sm:h-64 bg-gray-200 overflow-hidden">
-        <img src={coverImage || ''} alt="Profile Banner" className="w-full h-full object-cover" />
-        {isEditing && (
-          <label htmlFor="coverImage" className="absolute top-4 right-4 bg-white/80 rounded-full p-2 cursor-pointer hover:bg-white">
-            <Camera className="w-5 h-5 text-gray-700" />
-            <input id="coverImage" name="coverImage" type="file" className="sr-only" onChange={handleImageChange} accept="image/*" />
-          </label>
-        )}
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10">
-        {/* --- Profile Header --- */}
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-          <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full">
-              <div className="relative group -mt-16">
-                <img className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover" src={profilePic || ''} alt={profile.username} />
-                {isEditing && (
-                  <label htmlFor="profilePic" className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
-                    <Camera className="w-8 h-8 text-white" />
-                    <input id="profilePic" name="profilePic" type="file" className="sr-only" onChange={handleImageChange} accept="image/*" />
-                  </label>
-                )}
-              </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-3xl font-bold text-gray-900">{profile.fullName}</h1>
-                <p className="text-gray-600 text-sm">@{profile.username}</p>
-                {!isEditing && <p className="text-gray-600 text-sm max-w-lg mt-2">{profile.bio}</p>}
-                <div className="flex items-center justify-center sm:justify-start gap-4 mt-3 text-gray-700 text-sm">
-                  <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {profile.followers.toLocaleString()} Followers</span>
-                  <span className="flex items-center gap-1"><UserPlus className="w-4 h-4" /> {profile.following.toLocaleString()} Following</span>
-                  <span className="flex items-center gap-1"><FileText className="w-4 h-4" /> {profile.postsCount.toLocaleString()} Posts</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 sm:mt-0 flex items-center gap-3">
-              {isCurrentUser ? (
-                !isEditing && <Button onClick={() => setIsEditing(true)}><Pencil className="w-4 h-4 mr-2" />Edit Profile</Button>
-              ) : (
-                <>
-                  <Button>Follow</Button>
-                  <Button variant="outline">Message</Button>
-                </>
-              )}
-            </div>
-          </div>
+    <>
+      <div className="bg-gray-50 min-h-screen pb-16">
+        {/* --- Profile Banner --- */}
+        <div className="relative w-full h-48 sm:h-64 bg-gray-200 overflow-hidden">
+          <img src={coverImage || ''} alt="Profile Banner" className="w-full h-full object-cover" />
+          {isEditing && (
+            <label htmlFor="coverImage" className="absolute top-4 right-4 bg-white/80 rounded-full p-2 cursor-pointer hover:bg-white">
+              <Camera className="w-5 h-5 text-gray-700" />
+              <input id="coverImage" name="coverImage" type="file" className="sr-only" onChange={handleImageChange} accept="image/*" />
+            </label>
+          )}
         </div>
 
-        {/* --- EDITING FORM --- */}
-        {isEditing && (
-          <form onSubmit={handleSave} className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mt-8">
-            {/* --- Edit Navigation Tabs --- */}
-            <div className="border-b border-gray-200">
-              <nav className="-mb-px flex space-x-6">
-                <button type="button" onClick={() => setActiveEditTab('profile')} className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeEditTab === 'profile' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Edit Profile</button>
-                <button type="button" onClick={() => setActiveEditTab('security')} className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeEditTab === 'security' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Security</button>
-              </nav>
-            </div>
-            <div className="mt-6">
-              {activeEditTab === 'profile' && (
-                <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
-                  <div className="sm:col-span-3"><InputField id="fullName" label="Full Name" type="text" value={profile.fullName} onChange={handleProfileChange} placeholder="John Doe" icon={User} /></div>
-                  <div className="sm:col-span-3"><InputField id="username" label="Username" type="text" value={profile.username} onChange={handleProfileChange} placeholder="yourusername" icon={User} /></div>
-                  <div className="sm:col-span-6"><InputField id="email" label="Email" type="email" value={profile.email} onChange={handleProfileChange} placeholder="you@example.com" icon={Mail} /></div>
-                  <div className="sm:col-span-6">
-                    <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
-                    <textarea id="bio" name="bio" rows={3} className="mt-1 shadow-sm block w-full sm:text-sm border border-gray-300 rounded-md p-2" value={profile.bio} onChange={handleProfileChange} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10">
+          {/* --- Profile Header --- */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between">
+              <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full">
+                <div className="relative group -mt-16">
+                  <img className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover" src={profilePic || ''} alt={profile.username} />
+                  {isEditing && (
+                    <label htmlFor="profilePic" className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                      <Camera className="w-8 h-8 text-white" />
+                      <input id="profilePic" name="profilePic" type="file" className="sr-only" onChange={handleImageChange} accept="image/*" />
+                    </label>
+                  )}
+                </div>
+                <div className="text-center sm:text-left">
+                  <h1 className="text-3xl font-bold text-gray-900">{profile.fullName}</h1>
+                  <p className="text-gray-600 text-sm">@{profile.username}</p>
+                  {!isEditing && <p className="text-gray-600 text-sm max-w-lg mt-2">{profile.bio}</p>}
+                  <div className="flex items-center justify-center sm:justify-start gap-4 mt-3 text-gray-700 text-sm">
+                    <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {profile.followers.toLocaleString()} Followers</span>
+                    <span className="flex items-center gap-1"><UserPlus className="w-4 h-4" /> {profile.following.toLocaleString()} Following</span>
+                    <span className="flex items-center gap-1"><FileText className="w-4 h-4" /> {profile.postsCount.toLocaleString()} Posts</span>
                   </div>
                 </div>
-              )}
-              {activeEditTab === 'security' && (
-                <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
-                  <div className="sm:col-span-6"><InputField id="currentPassword" label="Current Password" type="password" value={passwords.currentPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
-                  <div className="sm:col-span-3"><InputField id="newPassword" label="New Password" type="password" value={passwords.newPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
-                  <div className="sm:col-span-3"><InputField id="confirmPassword" label="Confirm Password" type="password" value={passwords.confirmPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
-                </div>
-              )}
-            </div>
-            {/* --- Action Buttons --- */}
-            <div className="pt-8 flex justify-between items-center">
-              <div>
-                {notification.message && <div className={`flex items-center gap-2 text-sm ${notification.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>{notification.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}{notification.message}</div>}
               </div>
-              <div className="flex gap-x-3">
-                <Button type="button" variant="outline" onClick={handleCancel}><X className="w-4 h-4 mr-2" />Cancel</Button>
-                <Button type="submit"><Save className="w-4 h-4 mr-2" />Save Changes</Button>
+              <div className="mt-6 sm:mt-0 flex items-center gap-3">
+                {isCurrentUser ? (
+                  !isEditing && <Button onClick={() => setIsEditing(true)}><Pencil className="w-4 h-4 mr-2" />Edit Profile</Button>
+                ) : (
+                  <>
+                    <Button>Follow</Button>
+                    <Button variant="outline">Message</Button>
+                  </>
+                )}
               </div>
             </div>
-          </form>
-        )}
+          </div>
 
-        {/* --- PROFILE CONTENT (Posts, About, etc.) --- */}
-        {!isEditing && (
-          <>
-            <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100 mt-8">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div className="flex gap-2"><Button variant="outline" className="font-semibold text-blue-600">Posts</Button></div>
-                <div className="flex flex-wrap justify-center sm:justify-end gap-2">
-                  <Button variant={activeFilter === 'latest' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('latest')}>Latest</Button>
-                  <Button variant={activeFilter === 'most-popular' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('most-popular')}>Most Popular</Button>
-                  <Button variant={activeFilter === 'oldest' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('oldest')}>Oldest</Button>
-                </div>
+          {/* --- EDITING FORM --- */}
+          {isEditing && (
+            <form onSubmit={handleSave} className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mt-8">
+              {/* --- Edit Navigation Tabs --- */}
+              <div className="border-b border-gray-200">
+                <nav className="-mb-px flex space-x-6">
+                  <button type="button" onClick={() => setActiveEditTab('profile')} className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeEditTab === 'profile' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Edit Profile</button>
+                  <button type="button" onClick={() => setActiveEditTab('security')} className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeEditTab === 'security' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Security</button>
+                </nav>
               </div>
-            </div>
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredPosts.map((post) => (
-                <div key={post.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden group">
-                  <div className="relative w-full h-48 bg-gray-200"><img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" /></div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 line-clamp-2">{post.title}</h3>
-                    <div className="flex items-center text-gray-500 text-sm mt-2 space-x-3">
-                      <span className="flex items-center gap-1"><Eye size={14} /> {post.views.toLocaleString()}</span>
-                      <span className="flex items-center gap-1"><ThumbsUp size={14} /> {post.likes.toLocaleString()}</span>
+              <div className="mt-6">
+                {activeEditTab === 'profile' && (
+                  <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
+                    <div className="sm:col-span-3"><InputField id="fullName" label="Full Name" type="text" value={profile.fullName} onChange={handleProfileChange} placeholder="John Doe" icon={User} /></div>
+                    <div className="sm:col-span-3"><InputField id="username" label="Username" type="text" value={profile.username} onChange={handleProfileChange} placeholder="yourusername" icon={User} /></div>
+                    <div className="sm:col-span-6"><InputField id="email" label="Email" type="email" value={profile.email} onChange={handleProfileChange} placeholder="you@example.com" icon={Mail} /></div>
+                    <div className="sm:col-span-6">
+                      <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
+                      <textarea id="bio" name="bio" rows={3} className="mt-1 shadow-sm block w-full sm:text-sm border border-gray-300 rounded-md p-2" value={profile.bio} onChange={handleProfileChange} />
                     </div>
                   </div>
+                )}
+                {activeEditTab === 'security' && (
+                  <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
+                    <div className="sm:col-span-6"><InputField id="currentPassword" label="Current Password" type="password" value={passwords.currentPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
+                    <div className="sm:col-span-3"><InputField id="newPassword" label="New Password" type="password" value={passwords.newPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
+                    <div className="sm:col-span-3"><InputField id="confirmPassword" label="Confirm Password" type="password" value={passwords.confirmPassword} onChange={handlePasswordChange} placeholder="••••••••" icon={Lock} /></div>
+                  </div>
+                )}
+              </div>
+              {/* --- Action Buttons --- */}
+              <div className="pt-8 flex justify-between items-center">
+                <div>
+                  {notification.message && <div className={`flex items-center gap-2 text-sm ${notification.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>{notification.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}{notification.message}</div>}
                 </div>
-              ))}
-            </div>
-          </>
-        )}
+                <div className="flex gap-x-3">
+                  <Button type="button" variant="outline" onClick={handleCancel}><X className="w-4 h-4 mr-2" />Cancel</Button>
+                  <Button type="submit"><Save className="w-4 h-4 mr-2" />Save Changes</Button>
+                </div>
+              </div>
+            </form>
+          )}
+
+          {/* --- PROFILE CONTENT (Posts, About, etc.) --- */}
+          {!isEditing && (
+            <>
+              <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100 mt-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <div className="flex gap-2"><Button variant="outline" className="font-semibold text-blue-600">Posts</Button></div>
+                  <div className="flex flex-wrap justify-center sm:justify-end gap-2">
+                    <Button variant={activeFilter === 'latest' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('latest')}>Latest</Button>
+                    <Button variant={activeFilter === 'most-popular' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('most-popular')}>Most Popular</Button>
+                    <Button variant={activeFilter === 'oldest' ? 'default' : 'outline'} size="sm" onClick={() => setActiveFilter('oldest')}>Oldest</Button>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredPosts.map((post) => (
+                  <div key={post.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden group">
+                    <div className="relative w-full h-48 bg-gray-200"><img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" /></div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-gray-900 line-clamp-2">{post.title}</h3>
+                      <div className="flex items-center text-gray-500 text-sm mt-2 space-x-3">
+                        <span className="flex items-center gap-1"><Eye size={14} /> {post.views.toLocaleString()}</span>
+                        <span className="flex items-center gap-1"><ThumbsUp size={14} /> {post.likes.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
