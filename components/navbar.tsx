@@ -84,7 +84,7 @@ export function Navbar() {
                   </Link>
                 ))}
                 <button
-                  onClick={() => router.push('/profile')}
+                  onClick={() => router.push('/profile/anand-maharana')}
                   className="p-1 rounded-full text-gray-600 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                   aria-label="User Profile"
                 >
