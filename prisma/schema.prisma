@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -11,24 +10,98 @@ datasource db {
 
 // tables :- 
 
-model User {
-  id       String  @id @default(cuid())
-  email    String? @unique
-  password String?
-  username String?
-  Blog     Blog[]
+// datasource and generator remain the same
+
+// Enum for User Roles
+enum Role {
+  USER
+  ADMIN
+  EDITOR
 }
 
+// User Model
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String?
+  username      String   @unique
+  google_id     String?  @unique
+  bio           String?
+  profile_image String?
+  cover_image   String?
+  is_verified   Boolean  @default(false)
+  role          Role     @default(USER)
+  created_at    DateTime @default(now())
+  updated_at    DateTime
+
+  // Relations
+  blogs    Blog[]
+  comments Comment[]
+  likes    Like[]
+}
+
+// Blog Post Model
 model Blog {
   id               String   @id @default(cuid())
-  author_id        String
-  suthor           User     @relation(fields: [author_id], references: [id])
-  title            String?
+  title            String
   content          String
-  slug             String
-  meta_discription String
-  cover_image      String
-  is_published     Boolean  @default(true)
+  slug             String   @unique
+  meta_description String
+  cover_image      String?
+  is_published     Boolean  @default(false)
   created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  updated_at       DateTime @default(now()) @updatedAt
+
+  // Relations
+  author_id  String
+  author     User       @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  comments   Comment[]
+  likes      Like[]
+  categories Category[]
+  tags       Tag[]
+}
+
+// Category Model
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  blogs Blog[]
+}
+
+// Tag Model
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  blogs Blog[]
+}
+
+// Comment Model
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  author_id String
+  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  blog_id   String
+  blog      Blog   @relation(fields: [blog_id], references: [id], onDelete: Cascade)
+}
+
+// Like Model
+model Like {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  author_id String
+  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  blog_id   String
+  blog      Blog   @relation(fields: [blog_id], references: [id], onDelete: Cascade)
+
+  // Constraints
+  @@unique([author_id, blog_id])
 }

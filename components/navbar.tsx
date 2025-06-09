@@ -32,6 +32,7 @@ export function Navbar() {
     (async () => {
       const session = await getSession();
       if (session?.user) {
+        console.log("User is authorized:", session.user);
         setIsAuthorized(true);
       } else {
         setIsAuthorized(false);

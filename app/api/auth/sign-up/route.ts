@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
                 username,
                 email,
                 password: hashedPassword,
+                updated_at: new Date(),
             }
         });
 
@@ -56,10 +57,10 @@ export async function POST(request: NextRequest) {
         return ResponseHandler.success(201, "User created successfully.", {
             id: newUser.id,
             username: newUser.username,
-            email: newUser.email
+            email: newUser.email,
         });
     } catch (error) {
         // Optionally log error to server logs here
-        return ResponseHandler.error(500, "Internal Server Error. Failed to sign up.");
+        return ResponseHandler.error(500, "Internal Server Error. Failed to sign up.", error = error);
     }
 }
