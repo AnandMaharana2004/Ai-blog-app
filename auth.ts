@@ -42,7 +42,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
 
   ],
-  pages : {
+  pages: {
     signIn: "/sign-in",
-  }
+  },
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (account?.provider === "google") {
+        if (profile?.email_verified && profile?.email) {
+          console.log("Google sign-in verified:", profile);
+          // Check if the user already exists in the database
+          const user = await prisma.user.findUnique({
+            where: { email: profile.email }
+          })
+          if (!user) {
+            // If the user does not exist, create a new user
+            const newUser = await prisma.user.create({
+              data: {
+                email: profile.email,
+                username: profile.name || "",
+                profile_image: profile.picture || "",
+                updated_at: new Date(),
+                google_id: profile.sub || "",
+              },
+            });
+            if (!newUser) {
+              throw new Error("Failed to create user in database");
+            }
+          }
+          return true;
+        }
+        return false;
+      }
+      return true; // Do different verification for other providers that don't have `email_verified`
+    },
+  },
 })
